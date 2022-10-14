@@ -1,0 +1,8 @@
+[credential]
+	UseHttpPath = true
+	helper = !aws codecommit credential-helper $@
+[user]
+	email = undefined@email
+	name = AFT provisioner
+[init]
+	defaultBranch = main
