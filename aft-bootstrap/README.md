@@ -13,4 +13,4 @@
   * Set environment variable AWS\_REGION to the region where AWS Control Tower is provisioned.
   * Review and change if needed aft module settings in aft-management.tf
   * Run terraform apply 
-  
+   
