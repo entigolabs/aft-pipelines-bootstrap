@@ -2,10 +2,11 @@ locals {
   accounts         = data.aws_organizations_organization.controltower.accounts[*]
   log_account_id   = local.accounts[index(local.accounts[*].name, "Log Archive")].id
   audit_account_id = local.accounts[index(local.accounts[*].name, "Audit")].id
-  mgmt_account_id  = local.accounts[index(local.accounts[*].name, "AFT-Management")].id
   ct_region        = data.aws_region.current.name
-  path = abspath(path.module)
+  path             = abspath(path.module)
 }
+
+# Create and populate repository
 
 resource "aws_codecommit_repository" "aft_provisioner" {
   repository_name = "aft-provisioner"
@@ -13,7 +14,7 @@ resource "aws_codecommit_repository" "aft_provisioner" {
   default_branch  = "main"
 }
 
-resource "null_resource"  "push_provisioner_to_repo" {
+resource "null_resource" "push_provisioner_to_repo" {
   provisioner "local-exec" {
     command = <<-EOS
       rm -rf aft-provisioner-cloned
@@ -45,4 +46,3 @@ resource "local_file" "main_tf" {
   })
   filename = "${path.module}/aft-provisioner/main.tf"
 }
-
