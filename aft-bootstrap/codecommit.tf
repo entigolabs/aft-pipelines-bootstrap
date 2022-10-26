@@ -33,16 +33,16 @@ EOS
 
 resource "local_file" "main_tf" {
   content = templatefile("${path.module}/templates/main.tf.tpl", {
-    aft_acc_root_email       = "rnd-aws+aft-management@entigo.com",
-    aft_acc_ou               = "AFT-Management",
-    aft_acc_sso_first_name   = "Priit",
-    aft_acc_sso_last_name    = "Randla",
-    aft_acc_sso_email        = "priit.randla@entigo.com",
+    aft_acc_root_email       = var.aft_management_account_root_email,
+    aft_acc_ou               = var.aft_management_account_ou,
+    aft_acc_sso_first_name   = var.aft_management_account_sso_admin.first_name
+    aft_acc_sso_last_name    = var.aft_management_account_sso_admin.last_name
+    aft_acc_sso_email        = var.aft_management_account_sso_admin.email
     ct_management_account_id = data.aws_caller_identity.current.account_id
     log_account_id           = local.log_account_id
     audit_account_id         = local.audit_account_id
     ct_home_region           = local.ct_region
-    ct_secondary_region      = local.ct_region != "eu-west-1" ? "eu-west-1" : "eu-north-1"
+    ct_secondary_region      = var.aft_backup_region
   })
   filename = "${path.module}/aft-provisioner/main.tf"
 }
