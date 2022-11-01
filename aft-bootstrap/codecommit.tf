@@ -3,7 +3,7 @@ locals {
   log_account_id   = local.accounts[index(local.accounts[*].name, "Log Archive")].id
   audit_account_id = local.accounts[index(local.accounts[*].name, "Audit")].id
   ct_region        = data.aws_region.current.name
-  path             = abspath(path.module)
+  path             = abspath(path.root)
 }
 
 # Create and populate repository
@@ -17,8 +17,9 @@ resource "aws_codecommit_repository" "aft_provisioner" {
 resource "null_resource" "push_provisioner_to_repo" {
   provisioner "local-exec" {
     command = <<-EOS
-      rm -rf aft-provisioner-cloned
-      cp templates/.gitconfig ${local.path}/.gitconfig
+      rm -rf aft-provisioner-cloned aft-provisioner
+      mkdir -p aft-provisioner
+      cp ${path.module}/templates/.gitconfig ${local.path}/.gitconfig
       HOME="${local.path}" git clone ${aws_codecommit_repository.aft_provisioner.clone_url_http} aft-provisioner-cloned
       [ -f aft-provisioner-cloned/.bootstrap ] && exit 0
       cp aft-provisioner/*.tf* aft-provisioner-cloned/
@@ -44,5 +45,5 @@ resource "local_file" "main_tf" {
     ct_home_region           = local.ct_region
     ct_secondary_region      = var.aft_backup_region
   })
-  filename = "${path.module}/aft-provisioner/main.tf"
+  filename = "${path.root}/aft-provisioner/main.tf"
 }
