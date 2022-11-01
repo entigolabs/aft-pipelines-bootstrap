@@ -17,8 +17,7 @@ resource "aws_codecommit_repository" "aft_provisioner" {
 resource "null_resource" "push_provisioner_to_repo" {
   provisioner "local-exec" {
     command = <<-EOS
-      rm -rf aft-provisioner-cloned aft-provisioner
-      mkdir -p aft-provisioner
+      rm -rf aft-provisioner-cloned 
       cp ${path.module}/templates/.gitconfig ${local.path}/.gitconfig
       HOME="${local.path}" git clone ${aws_codecommit_repository.aft_provisioner.clone_url_http} aft-provisioner-cloned
       [ -f aft-provisioner-cloned/.bootstrap ] && exit 0
